@@ -8,9 +8,12 @@ It contains relevant attributes as shown below
 */
 class Process {
  public:
-  Process(int pid, std::string command, long int upTime) {
+  Process(int pid, std::string user, std::string command, float cpuUtilization, std::string ram, long int upTime) {
     _pid = pid;
+    _user = user;
     _command = command;
+    _cpuUtilization = cpuUtilization;
+    _ram = ram;
     _upTime = upTime;
   }
     
