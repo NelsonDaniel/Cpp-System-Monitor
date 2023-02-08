@@ -97,16 +97,7 @@ float LinuxParser::MemoryUtilization() {
 
 // DONE: Read and return the system uptime
 long LinuxParser::UpTime() {   
-  long uptime = 0;
-  std::ifstream filestream(kProcDirectory + kUptimeFilename);
-  if (filestream.is_open()) {
-      string line;
-      std::getline(filestream, line);  
-      std::istringstream linestream(line);
-      linestream >> uptime;
-    }
-
-  return uptime;
+  return (ActiveJiffies() + IdleJiffies()) / sysconf(_SC_CLK_TCK);
 }
 
 // DONE: Read and return the number of jiffies for the system
@@ -115,7 +106,7 @@ long LinuxParser::Jiffies() {
 }
 
 // DONE: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
+// REMOVED: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid) { 
   long uptime = 0;
   std::ifstream filestream(kProcDirectory + "/" + std::to_string(pid) + "/" + kStatFilename);
@@ -188,6 +179,26 @@ long LinuxParser::IdleJiffies() {
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
+  vector<string> utilization; 
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if (filestream.is_open()) {
+    string line;
+    while (std::getline(filestream, line)) {
+      string key;   
+      std::istringstream linestream(line);
+      while (linestream >> key) {
+        if (key == "cpu") {
+          for (int i = 0; i < 10; i++) {            
+            string value;   
+            linestream >> value;
+            utilization.push_back(value);
+          }            
+        }        
+      }
+    }    
+  }
+
+  return utilization;
 }
 
 // DONE: Read and return the total number of processes

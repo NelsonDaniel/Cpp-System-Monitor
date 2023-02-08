@@ -19,6 +19,7 @@ You need to properly format the uptime. Refer to the comments mentioned in forma
 
 // DONE: Return the system's CPU
 Processor& System::Cpu() { 
+    cpu_.Utilization(LinuxParser::CpuUtilization());
     return cpu_; 
 }
 
@@ -31,7 +32,7 @@ vector<Process>& System::Processes() {
                 pid, 
                 LinuxParser::User(pid),
                 LinuxParser::Command(pid),
-                (LinuxParser::UpTime(pid) * 100.0)/UpTime(),
+                (LinuxParser::UpTime(pid) * 100.0) / UpTime(),
                 LinuxParser::Ram(pid),
                 LinuxParser::UpTime(pid)
             )
