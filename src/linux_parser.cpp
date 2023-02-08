@@ -133,7 +133,7 @@ long LinuxParser::ActiveJiffies(int pid) {
   return uptime ;
 }
 
-// TODO: Read and return the number of active jiffies for the system
+// DONE: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() { 
   long activeJiffies = 0;
   std::ifstream filestream(kProcDirectory + kStatFilename);
@@ -177,7 +177,7 @@ long LinuxParser::IdleJiffies() {
   return idleJiffies; 
 }
 
-// TODO: Read and return CPU utilization
+// DONE: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
   vector<string> utilization; 
   std::ifstream filestream(kProcDirectory + kStatFilename);

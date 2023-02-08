@@ -32,12 +32,14 @@ vector<Process>& System::Processes() {
                 pid, 
                 LinuxParser::User(pid),
                 LinuxParser::Command(pid),
-                (LinuxParser::UpTime(pid) * 100.0) / UpTime(),
+                ((float)(UpTime() * 1.0 - LinuxParser::UpTime(pid)))/ UpTime(),
                 LinuxParser::Ram(pid),
                 LinuxParser::UpTime(pid)
             )
         );
     }
+
+    std::sort(processes_.begin(), processes_.end());
     
     return processes_; 
 }
