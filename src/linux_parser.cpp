@@ -96,9 +96,7 @@ float LinuxParser::MemoryUtilization() {
 }
 
 // DONE: Read and return the system uptime
-long LinuxParser::UpTime() {
-  return Jiffies() / sysconf(_SC_CLK_TCK);
-}
+long LinuxParser::UpTime() { return Jiffies() / sysconf(_SC_CLK_TCK); }
 
 // DONE: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() {
@@ -163,7 +161,7 @@ long LinuxParser::ActiveJiffies() {
     linestream >> totalSeconds;
     linestream >> ignore;
     linestream >> idleSeconds;
-    activeJiffies = (totalSeconds - idleSeconds)*sysconf(_SC_CLK_TCK);
+    activeJiffies = (totalSeconds - idleSeconds) * sysconf(_SC_CLK_TCK);
   }
 
   return activeJiffies;
@@ -236,7 +234,6 @@ int LinuxParser::TotalProcesses() {
   return count;
 }
 
-
 // DONE: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
   int count = 0;
@@ -270,9 +267,14 @@ string LinuxParser::Command(int pid) {
     std::istringstream linestream(line);
     linestream >> command;  // Extract the command
   }
+
+  // If command is too long, truncate it
+  if (command.length() > 32) {
+    command = command.substr(0, 29) + "...";
+  }
+
   return command;
 }
-
 
 // DONE: Read and return the memory used by a process
 string LinuxParser::Ram(int pid) {
@@ -288,7 +290,7 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       // Parse the VmSize (Virtual Memory Size) value
       while (linestream >> key >> value) {
-        if (key == "VmSize:") {
+        if (key == "VmRSS:") {
           std::stringstream stream;
           stream << std::fixed << std::setprecision(3)
                  << value / 1000.0;  // Convert from KB to MB
@@ -326,7 +328,7 @@ string LinuxParser::Uid(int pid) {
 string LinuxParser::User(int pid) {
   string username = "";
   // Open the system's password file to get user information
-  std::ifstream filestream("/etc/passwd");
+  std::ifstream filestream(kPasswordPath);
   if (filestream.is_open()) {
     string line;
     while (std::getline(filestream, line)) {
